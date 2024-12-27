@@ -104,9 +104,8 @@ html {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: url("/static/ground.gif") no-repeat;
+  background: url("/static/work4.gif") no-repeat;
   background-size: cover;
-  background-position-y: top;
 }
 #top {
   display: flex;
@@ -128,6 +127,7 @@ html {
   width: 60%;
   height: 95%;
   z-index: 1;
+  margin-right: 250px;
 }
 
 #left {

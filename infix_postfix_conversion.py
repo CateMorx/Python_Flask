@@ -106,3 +106,4 @@ def infix_to_postfix(infix):
         output.append(ops_stack.pop())
 
     joint = ''.join(output)
+    return joint

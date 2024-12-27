@@ -6,6 +6,7 @@ from interpolation_test import interpolation_search, interpolation_search_wrappe
 from jump_search import jump_search, jump_search_wrapper
 from linear_search import linear_search, linear_search_wrapper
 from ternary_search import ternary_search, ternary_search_wrapper
+from dq import Node,Queue, Deque
 
 app = Flask(__name__)
 
@@ -36,6 +37,16 @@ def work2():
 @app.route('/work3', methods=['GET', 'POST'])
 def work3():
     return render_template('work3.html')
+
+@app.route('/work4', methods=['GET', 'POST'])
+def work4():
+    return render_template('work4.html')
+
+@app.route('/bubblesortalgo', methods=['GET', 'POST'])
+def bubblesortalgo():
+    return render_template('bubblesortalgo.html')
+
+
 
 @app.route("/smallalgo", methods=["GET", "POST"])
 def small_algo():
@@ -332,120 +343,73 @@ def infix():
 
     return render_template('infixpostfix.html', result=result)
 
-@app.route('/queue', methods=['GET', 'POST'])
-def queue():
-    result = None
-    if request.method == 'POST':
-        class Node:
-            def __init__(self, data):
-                self.data = data
-                self.next = None
+global_deque = Deque()
+@app.route("/deque", methods=["GET", "POST"])
+def deque():
+    global global_deque
+    linked_list_data = []
 
-        class LinkedList:
-            def __init__(self):
-                self.head = None
-                self.tail = None
-
-            def add_front(self, data):
-                new_node = Node(data)
-                if self.head:
-                    new_node.next = self.head
-                    self.head = new_node
-                else:
-                    self.head = new_node
-                    self.tail = new_node
-
-            def add_rear(self, data):
-                new_node = Node(data)
-                if self.head:
-                    self.tail.next = new_node
-                    self.tail = new_node
-                else:
-                    self.tail = new_node
-                    self.head = new_node
-
-            def search(self, data):
-                current_node = self.head
-                while current_node:
-                    if current_node.data == data:
-                        return True
-                    current_node = current_node.next
-                return False
-
-            def printLinkedList(self):
-                current_node = self.head
-                while current_node:
-                    print(current_node.data)
-                    current_node = current_node.next
-
-            def remove_front(self):
-                if self.head:
-                    removed_data = self.head.data
-                    if self.head.next:
-                        self.head = self.head.next
-                    else:
-                        self.head = None
-                        self.tail = None
-                    return removed_data
-                else:
-                    print("Error: The deque is empty.")
-                return None
-
-            def remove_rear(self):
-                if self.head:
-                    removed_data = self.tail.data
-                    if self.head == self.tail:
-                        self.head = None
-                        self.tail = None
-                    else:
-                        current_node = self.head
-                        while current_node.next != self.tail:
-                            current_node = current_node.next
-                        current_node.next = None
-                        self.tail = current_node
-                    return removed_data
-                else:
-                    print("Error: The deque is empty.")
-                return None
-
-            def is_empty(self):
-                return self.head is None
-
-            def size(self):
-                count = 0
-                current_node = self.head
-                while current_node:
-                    count += 1
-                    current_node = current_node.next
-                return count
-
+    if request.method == "POST":
         usage = request.form.get("usage")
 
-        linked_list = LinkedList()
-
         if usage == "add front":
-            value = request.form.get("value")
-            linked_list.add_front(value)
+            data_to_add = request.form.get("data")
+            global_deque.add_front(data_to_add)
+            linked_list_data = global_deque.printLinkedList()
+            print("Linked List Data:", linked_list_data)
+
 
         elif usage == "add rear":
-            value = request.form.get("value")
-            linked_list.add_rear(value)
+            data_to_add = request.form.get("data")
+            global_deque.add_rear(data_to_add)
+            linked_list_data = global_deque.printLinkedList()
+            print("Linked List Data:", linked_list_data)
 
-        elif usage == "printLinkedList":
-            return linked_list.printLinkedList()
 
         elif usage == "remove front":
-            linked_list.remove_front()
+            global_deque.remove_front()
+            linked_list_data = global_deque.printLinkedList()
+            print("Linked List Data:", linked_list_data)
+
 
         elif usage == "remove rear":
-            value = request.form.get("value")
-            linked_list.add_front(value)
+            global_deque.remove_rear()
+            linked_list_data = global_deque.printLinkedList()
+            print("Linked List Data:", linked_list_data)
 
-        elif usage == "is empty":
-            linked_list.is_empty()
 
-        elif usage == "size":
-            linked_list.size()
+
+
+    return render_template("Deque.html", linked_list_data=linked_list_data)
+
+global_queue = Queue()
+@app.route("/queue", methods=["GET", "POST"])
+def queue():
+    global global_queue
+    linked_list_data = []
+
+    if request.method == "POST":
+        usage = request.form.get("usage")
+
+        if usage == "enqueue":
+            data_to_add = request.form.get("data")
+            global_queue.enqueue(data_to_add)
+            linked_list_data = global_queue.printLinkedList()
+            print("Linked List Data:", linked_list_data)
+
+        elif usage == "dequeue":
+            global_queue.dequeue()
+            linked_list_data = global_queue.printLinkedList()
+            print("Linked List Data:", linked_list_data)
+    return render_template("Queue.html", linked_list_data=linked_list_data)
+
+@app.route("/bubblesort", methods=["GET"])
+def bubblesort():
+    return render_template("bubblesort.html")
+
+@app.route("/bubblesort2", methods=["GET"])
+def bubblesort2():
+    return render_template("bubblesort2.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
